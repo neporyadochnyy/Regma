@@ -2,7 +2,7 @@
 
 ## What is this?
 
-This is mod which include new block - Renerating Magma.
+This is mod which include new block - Regenerating Magma.
 
 ## What is block doing?
 
