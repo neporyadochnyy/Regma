@@ -19,7 +19,6 @@ public class RegenerationMagmaBlock extends Block {
 
     public boolean WAIT = false;
     public boolean STARTED = false;
-
     public void clock () {
         Thread one = new Thread() {
             public void run() {
@@ -34,23 +33,26 @@ public class RegenerationMagmaBlock extends Block {
         };
         one.start();
     }
+
     public Holder<Attribute> maxHealthAttribute = Attributes.MAX_HEALTH;
 
     @Override
     public void stepOn(Level level, BlockPos blockPos, BlockState blockState, Entity entity) {
-        double maxHealth = ((LivingEntity) entity).getAttributeValue(maxHealthAttribute);
-        double currentHealth = ((LivingEntity) entity).getHealth();
-        if (entity.isSteppingCarefully() && entity instanceof LivingEntity && maxHealth != currentHealth) {
-            if (WAIT == false) {
-                WAIT = true;
-                ((LivingEntity) entity).heal(1.0F);
-                entity.playSound(SoundEvents.LAVA_POP, 1.0F, 0.8F);
+        if (entity.isSteppingCarefully() && entity instanceof LivingEntity) {
+            double maxHealth = ((LivingEntity) entity).getAttributeValue(maxHealthAttribute);
+            double currentHealth = ((LivingEntity) entity).getHealth();
+            if (currentHealth != maxHealth) {
+                if (WAIT == false) {
+                    WAIT = true;
+                    ((LivingEntity) entity).heal(1.0F);
+                    entity.playSound(SoundEvents.LAVA_POP, 1.0F, 0.8F);
+                }
+                if (WAIT == true && STARTED == false) {
+                    STARTED = true;
+                    clock();
+                }
             }
-            if (WAIT == true && STARTED == false) {
-                STARTED = true;
-                clock();
-            }
+            super.stepOn(level, blockPos, blockState, entity);
         }
-        super.stepOn(level, blockPos, blockState, entity);
     }
 }
